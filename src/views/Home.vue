@@ -45,7 +45,7 @@ export default {
         <input type="password" v-model="newSessionParams.password" />
       </div>
       <input type="submit" value="Log In" />
-      <button>Create Account</button>
+      <router-link to="/signup" tag="button">Create Account</router-link>
     </form>
   </div>
 </template>

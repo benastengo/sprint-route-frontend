@@ -21,6 +21,8 @@ export default {
     <router-link to="/about">About</router-link>
     |
     <router-link to="/logout">Logout</router-link>
+    |
+    <router-link to="/users">Drivers</router-link>
   </div>
   <router-view />
 </template>

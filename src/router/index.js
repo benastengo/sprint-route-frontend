@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Logout from "../views/Logout.vue";
 import usersShow from "../views/usersShow.vue";
+import Signup from "../views/Signup.vue";
+import UsersIndex from "../views/UsersIndex.vue";
 
 const routes = [
   {
@@ -27,6 +29,8 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
+  { path: "/signup", name: "signup", component: Signup },
+  { path: "/users", name: "Drivers", component: UsersIndex },
 ];
 
 const router = createRouter({
