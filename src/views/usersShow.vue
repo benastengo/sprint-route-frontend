@@ -27,6 +27,7 @@ export default {
     <!-- <h3>Completed Loads: {{ user.orders.fulfilled.length }}</h3> -->
     <!-- <h3>Unfulfilled Loads: {{ user.orders.fulfilled.length }}</h3> -->
   </div>
+  <h1>Todays Loads:</h1>
   <div v-for="order in user.orders" v-bind:key="order.id">
     <h2>Load Origin:</h2>
     <h2>Blend(s): {{ order.blend }}</h2>

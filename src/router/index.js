@@ -4,6 +4,7 @@ import Logout from "../views/Logout.vue";
 import usersShow from "../views/usersShow.vue";
 import Signup from "../views/Signup.vue";
 import UsersIndex from "../views/UsersIndex.vue";
+import CustomerShow from "../views/CustomerShow.vue";
 
 const routes = [
   {
@@ -31,6 +32,8 @@ const routes = [
   },
   { path: "/signup", name: "signup", component: Signup },
   { path: "/users", name: "Drivers", component: UsersIndex },
+  { path: "/customers/:id", name: "customers-show", component: CustomerShow },
+
 ];
 
 const router = createRouter({
