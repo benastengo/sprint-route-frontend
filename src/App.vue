@@ -16,13 +16,15 @@ export default {
 
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link>
+    <router-link v-if="!isLoggedIn" to="/">Home</router-link>
     |
     <router-link to="/about">About</router-link>
     |
     <router-link to="/logout">Logout</router-link>
     |
     <router-link to="/users">Drivers</router-link>
+    |
+    <router-link to="/orders/new">New Order</router-link>
   </div>
   <router-view />
 </template>
