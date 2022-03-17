@@ -16,6 +16,7 @@ export default {
     axios.get("/customers/" + this.$route.params.id).then((response) => {
       console.log("customers show", response);
       this.customer = response.data;
+      this.newOrderParams.customer_id = this.customer.id;
     });
   },
   methods: {
@@ -50,7 +51,7 @@ export default {
     },
     createOrder: function () {
       axios
-        .post("/orders/", this.newOrderparams)
+        .post("/orders/", this.newOrderParams)
         .then((response) => {
           console.log("Success!", response.data);
         })
@@ -72,11 +73,6 @@ export default {
       <dialog id="newOrder-details">
         <form method="dialog">
           <h2>New Order for {{ customer.name }}</h2>
-
-          <p>
-            Unique Id:
-            <input type="integer" v-model="newOrderParams.customer_id" />
-          </p>
 
           <p>
             Blend:

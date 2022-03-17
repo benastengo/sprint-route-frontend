@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
   data: function () {
     return {
-      user: {},
+      user: { orders: [] },
     };
   },
   created: function () {
