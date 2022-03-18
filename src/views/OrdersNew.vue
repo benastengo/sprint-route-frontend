@@ -4,8 +4,10 @@ export default {
   data: function () {
     return {
       newOrderParams: {},
+      newCustomerParams: {},
       errors: [],
       customers: [],
+      orders: [],
     };
   },
   created: function () {
@@ -19,13 +21,20 @@ export default {
       axios
         .post("/orders", this.newOrderParams)
         .then((response) => {
-          console.log("orders create", response);
-          this.$router.push("/customers/3");
+          console.log("orders create", response.data);
+          this.$router.push(`/customers/${response.data.customer.id}`);
         })
         .catch((error) => {
           console.log("orders create error", error.response);
           this.errors = error.response.data.errors;
         });
+    },
+    createCustomer: function () {
+      axios.post("/customers", this.newCustomerParams).then((response) => {
+        console.log("Customers create", response.data);
+        // this.customer.push(response.data);
+        // this.$router.push(`/customers/${response.data.customer.id}`);
+      });
     },
   },
   default() {
@@ -35,6 +44,19 @@ export default {
 </script>
 
 <template>
+  <div class="customers-new">
+    <h1>New Customer</h1>
+    <form v-on:submit.prevent="createCustomer()">
+      <ul>
+        <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
+      </ul>
+      Customer Name:
+      <input type="stringr" v-model="newCustomerParams.name" />
+      Customer Address:
+      <input type="string" v-model="newCustomerParams.address" />
+      <input type="submit" value="Create" />
+    </form>
+  </div>
   <div class="orders-new">
     <h1>New Order</h1>
     <form v-on:submit.prevent="createOrder()">
@@ -49,7 +71,6 @@ export default {
         </option>
       </select>
       Blend:
-      <p>{{ newOrderParams }}</p>
       <input type="integer" v-model="newOrderParams.blend" />
       Volume:
       <input type="integer" v-model="newOrderParams.volume" />

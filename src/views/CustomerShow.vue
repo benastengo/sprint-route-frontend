@@ -28,7 +28,7 @@ export default {
     },
     updateOrder: function (order) {
       axios
-        .post(`/orders/${order.id}`, order)
+        .patch(`/orders/${order.id}`, order)
         .then((response) => {
           console.log("Success!", response.data);
         })
@@ -41,7 +41,7 @@ export default {
         axios.delete(`/orders/${order.id}`).then((response) => {
           console.log("Success", response.data);
           var index = this.orders.indexOf(order);
-          this.orders.splice(index, 1);
+          this.customer.orders.splice(index, 1);
         });
       }
     },
@@ -54,6 +54,7 @@ export default {
         .post("/orders/", this.newOrderParams)
         .then((response) => {
           console.log("Success!", response.data);
+          this.customer.orders.push(response.data);
         })
         .catch((error) => {
           console.log(error.response.data.errors);
