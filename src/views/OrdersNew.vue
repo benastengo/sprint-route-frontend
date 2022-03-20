@@ -32,8 +32,9 @@ export default {
     createCustomer: function () {
       axios.post("/customers", this.newCustomerParams).then((response) => {
         console.log("Customers create", response.data);
-        // this.customer.push(response.data);
-        // this.$router.push(`/customers/${response.data.customer.id}`);
+        this.customers.push(response.data);
+        this.newCustomerParams = {};
+        this.$router.push(`/customers/${response.data.id}`);
       });
     },
   },

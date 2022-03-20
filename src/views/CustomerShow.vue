@@ -117,7 +117,7 @@ export default {
         </p>
         <p>
           Date:
-          <input type="text" v-model="editOrderParams.day" />
+          <input type="date" v-model="editOrderParams.day" />
         </p>
         <p>
           ETA:

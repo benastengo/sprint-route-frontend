@@ -34,6 +34,7 @@ export default {
         .patch(`/orders/${order.id}`, order)
         .then((response) => {
           console.log("Success!", response.data);
+          this.user.orders.push;
         })
         .catch((error) => {
           console.log(error.response.data.errors);
@@ -57,9 +58,10 @@ export default {
   </div>
   <h1>Todays Loads:</h1>
   <div v-for="order in user.orders" v-bind:key="order.id">
-    <h2>Load Origin:</h2>
+    <!-- <h2>Load Origin:</h2> -->
     <h2>Blend(s): {{ order.blend }}</h2>
-    <h2>Volume (GL): {{ order.volume }}</h2>
+    <h2>Volume (GAL): {{ order.volume }}</h2>
+    <h2 v-if="order.preferred_window">ETA: {{ order.preferred_window }}</h2>
     <h2>
       Store:
       <router-link :to="`/customers/${order.customer.id}`" tag="button">{{ order.customer.name }}</router-link>

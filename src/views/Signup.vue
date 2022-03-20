@@ -14,7 +14,7 @@ export default {
         .post("/users", this.newUserParams)
         .then((response) => {
           console.log(response.data);
-          this.$router.push("/user");
+          (this.newUserParams = {}), this.$router.push(`/users/${response.data.id}`);
         })
         .catch((error) => {
           this.errors = error.response.data.errors;
