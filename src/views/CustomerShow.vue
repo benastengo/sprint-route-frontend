@@ -5,11 +5,12 @@ export default {
     return {
       orders: [],
       order: {},
-      customer: {},
+      customer: { orders: [] },
       currentOrder: {},
       editOrderParams: {},
       newOrder: {},
       newOrderParams: {},
+      isManager: localStorage.manager == "true",
     };
   },
   created: function () {
@@ -70,7 +71,7 @@ export default {
     <h2>Address: {{ customer.address }}</h2>
 
     <h2>
-      <button v-on:click="showNewOrder()">Create Order:</button>
+      <button v-if="isManager" v-on:click="showNewOrder()">Create Order:</button>
       <dialog id="newOrder-details">
         <form method="dialog">
           <h2>New Order for {{ customer.name }}</h2>
@@ -96,13 +97,13 @@ export default {
         </form>
       </dialog>
     </h2>
-    <h3>Orders:</h3>
+    <h3 v-if="customer.orders.length > 0">Active Orders:</h3>
     <h2 v-for="order in customer.orders" v-bind:key="order.id">
       <h3>
         Blend: {{ order.blend }} || volume: {{ order.volume }} GAL || date: {{ order.day }} || Completed:
         {{ order.fulfilled }}
       </h3>
-      <button v-on:click="showOrder(order)">Edit</button>
+      <button v-if="isManager" v-on:click="showOrder(order)">Edit</button>
     </h2>
     <dialog id="order-details">
       <form method="dialog">
@@ -123,9 +124,9 @@ export default {
           ETA:
           <input type="text" v-model="editOrderParams.preferred_window" />
         </p>
-        <button v-on:click="updateOrder(currentOrder)">Update</button>
-        <button v-on:click="destroyOrder(currentOrder)">Destroy</button>
-        <button>Close</button>
+        <button v-if="isManager" v-on:click="updateOrder(currentOrder)">Update</button>
+        <button v-if="isManager" v-on:click="destroyOrder(currentOrder)">Destroy</button>
+        <button v-if="isManager">Close</button>
       </form>
     </dialog>
   </div>

@@ -22,7 +22,7 @@ export default {
     <router-link v-if="isLoggedIn" to="/logout">Logout</router-link>
     <router-link v-if="isManager" to="/users">Drivers</router-link>
     <router-link v-if="isManager" to="/orders/new">New Order</router-link>
-    <router-link v-if="isManager" to="/signup">Create Account</router-link>
+    <router-link v-if="isManager" to="/signup">New Driver</router-link>
   </div>
   <router-view />
 </template>

@@ -16,11 +16,6 @@ export default {
         this.users = response.data;
       });
     },
-    notManager: function () {
-      return this.users.filter((users) => {
-        return users.manager == false;
-      });
-    },
   },
 };
 </script>
@@ -28,7 +23,7 @@ export default {
 <template>
   <div class="users-index">
     <h1>Drivers</h1>
-    <div v-for="user in notManager()" v-bind:key="user.id">
+    <div v-for="user in users" v-bind:key="user.id">
       <h2>
         <router-link :to="`/users/${user.id}`" tag="button">{{ user.first_name + " " + user.last_name }}</router-link>
       </h2>
