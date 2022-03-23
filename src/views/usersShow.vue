@@ -1,4 +1,5 @@
 <script>
+/* global bootstrap */
 import axios from "axios";
 export default {
   data: function () {
@@ -8,6 +9,7 @@ export default {
       userIds: [],
       isManager: localStorage.manager == "true",
       users: [],
+      orders: [],
     };
   },
   created: function () {
@@ -18,6 +20,10 @@ export default {
     axios.get("/users").then((response) => {
       console.log("users index", response);
       this.users = response.data;
+    });
+    axios.get("/orders").then((response) => {
+      console.log("Orders index", response);
+      this.orders = response.data;
     });
   },
   methods: {
@@ -68,50 +74,59 @@ export default {
       axios
         .patch("/orders/assignment", { user_ids: this.userIds })
         .then((response) => {
-          console.log("Assign Loads", response.data);
+          console.log("Assign Loads", response);
+
+          bootstrap.Modal.getInstance(document.getElementById("assignLoadsModalLabel")).hide();
         })
         .catch((error) => {
-          console.log("Error Assigning Loads", error.response.data);
+          console.log("Error Assigning Loads", error.response);
         });
+      this.$router.push(`/users/`, 2000);
     },
-    // removeUserId: function (order) {
-    //   axios
-    //     .patch(`/orders/${order.id}`, order)
-    //     .then((response) => {
-    //       console.log("Success!", response.data);
-    //       this.user.orders.push;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error.response.data.errors);
-    //     });
-    // },
   },
 };
 </script>
 
 <template>
-  <div>This is where a Map will be</div>
-  <div>
-    <dialog id="load-details">
-      <h2>Todays Drivers</h2>
-      <form method="dialog">
-        <div v-for="user in users" v-bind:key="user.id">
-          <input type="checkbox" :id="user.id" :value="user.id" v-model="userIds" />
-          <label :for="user.id">{{ user.first_name }} {{ user.last_name }}</label>
-        </div>
-        <span>Checked Users: {{ userIds }}</span>
-        <button v-on:click="assignLoads()">Submit</button>
-        <button>Close</button>
-      </form>
-    </dialog>
-    <button v-on:click="showLoadAssignment()">Assign Loads</button>
+  <div v-if="isManager">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignLoadsModal">
+      Load Optimization
+    </button>
   </div>
   <div class="home">
-    <h3>{{ user.first_name + " " + user.last_name }}</h3>
-    <h3>Tractor: {{ user.tractor_number }}</h3>
-    <h3>Trailer: {{ user.trailer_number }}</h3>
-    <h3>Location: {{ user.location }}</h3>
-    <h3>Assigned Loads: {{ user.orders.length }}</h3>
+    <h1>{{ user.first_name + " " + user.last_name }}</h1>
+    <h3 v-if="user.tractor_number">Tractor: {{ user.tractor_number }}</h3>
+    <h3 v-if="user.trailer_number">Trailer: {{ user.trailer_number }}</h3>
+    <h3>Driver Location: {{ user.location }}</h3>
+    <button v-on:click="showInfo()">Edit Driver Info</button>
+    <!-- Orders index for v2 -->
+    <!-- <div v-for="order in orders" v-bind:key="order.id">
+      <div v-if="isManager && order.user_id == null">
+        <ul class="list-group list-group-horizontal">
+          <li class="list-group-item">{{ order.customer.name }}</li>
+          <li class="list-group-item">{{ order.blend }}</li>
+          <li class="list-group-item">{{ order.volume }}</li>
+        </ul>
+      </div>
+    </div> -->
+    <div v-for="order in orders" v-bind:key="order.id">
+      <div v-if="isManager && order.user_id == null" class="list-group">
+        <a class="list-group-item list-group-item-action active mb-2 mt-1">
+          <div class="d-flex w-100 justify-content-between">
+            <router-link class="color" :to="`/customers/${order.customer.id}`" tag="button">
+              {{ order.customer.name }}
+            </router-link>
+            <small>{{ order.blend }} for {{ order.volume }} gallons</small>
+          </div>
+          <p class="mb-1">
+            {{ order.customer.address }}
+          </p>
+          <small>{{ order.day }}</small>
+        </a>
+      </div>
+    </div>
+    <h3 v-if="user.orders.length > 0">Assigned Loads: {{ user.orders.length }}</h3>
     <br />
     <dialog id="info-details">
       <form method="dialog">
@@ -132,14 +147,13 @@ export default {
         <button>Close</button>
       </form>
     </dialog>
-    <button v-on:click="showInfo()">Edit Info</button>
     <!-- <h3>Completed Loads: {{ user.orders.fulfilled.length }}</h3> -->
     <!-- <h3>Unfulfilled Loads: {{ user.orders.fulfilled.length }}</h3> -->
   </div>
   <h1 v-if="user.orders.length > 0">Todays Loads:</h1>
   <div v-for="order in user.orders" v-bind:key="order.id">
     <!-- <h2>Load Origin:</h2> -->
-    <h2>Blend(s): {{ order.blend }}</h2>
+    <h2>Blend: {{ order.blend }}</h2>
     <h2>Volume (GAL): {{ order.volume }}</h2>
     <h2 v-if="order.preferred_window">ETA: {{ order.preferred_window }}</h2>
     <h2>
@@ -176,6 +190,43 @@ export default {
       </dialog>
     </h2>
   </div>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="assignLoadsModal"
+    tabindex="-1"
+    aria-labelledby="assignLoadsModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content p-2">
+        <div class="modal-header">
+          <h5 class="modal-title" id="assignLoadsModalLabel">Choose Today's Drivers</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="form-check" v-for="user in users" v-bind:key="user.id">
+          <input class="form-check-input" type="checkbox" :value="user.id" :id="user.id" v-model="userIds" />
+          <label class="form-check-label" :for="user.id">{{ user.first_name }} {{ user.last_name }}</label>
+        </div>
+        <div class="modal-footer">
+          <button
+            id="loadOptimize"
+            type="button"
+            class="btn btn-primary"
+            data-bs-dismiss="modal"
+            v-on:click="assignLoads()"
+          >
+            Optimize Loads
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style></style>
+<style>
+.color {
+  color: rgb(250, 250, 250);
+}
+</style>

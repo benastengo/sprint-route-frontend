@@ -45,41 +45,72 @@ export default {
 </script>
 
 <template>
-  <div class="customers-new">
-    <h1>New Customer</h1>
+  <div class="container-sm mt-3 mb-3 customers-new border border-3 p-4">
+    <h1 class="lead"><strong>New Customer</strong></h1>
     <form v-on:submit.prevent="createCustomer()">
       <ul>
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
       </ul>
-      Customer Name:
-      <input type="stringr" v-model="newCustomerParams.name" />
-      Customer Address:
-      <input type="string" v-model="newCustomerParams.address" />
-      <input type="submit" value="Create" />
+      <div class="row mb-3">
+        <label for="customerName" class="col-sm-2 col-form-label">Customer Name:</label>
+        <div class="col-sm-10">
+          <input type="string" class="form-control" id="customerName" v-model="newCustomerParams.name" />
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label for="customerAddress" class="col-sm-2 col-form-label">Customer Address:</label>
+        <div class="col-sm-10">
+          <input type="string" class="form-control" id="customerAddress" v-model="newCustomerParams.address" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
-  <div class="orders-new">
-    <h1>New Order</h1>
+  <div class="orders-new container-sm mt-3 mb-3 border border-3 p-4">
+    <h1 class="lead"><strong>New Order</strong></h1>
     <form v-on:submit.prevent="createOrder()">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="validationDefault04" class="form-label">Customer</label>
+          <select v-model="newOrderParams.customer_id" class="form-select" id="validationDefault04" required>
+            <option v-for="customer in customers" v-bind:key="customer.id" v-bind:value="customer.id">
+              {{ customer.name }} || {{ customer.address }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="validationDefault02" class="form-label">Blend</label>
+          <input type="text" class="form-control" id="validationDefault02" v-model="newOrderParams.blend" required />
+        </div>
+        <div class="col-md-4">
+          <label for="validationDefaultUsername" class="form-label">Volume</label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="validationDefaultUsername"
+              aria-describedby="inputGroupPrepend2"
+              v-model="newOrderParams.volume"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="validationDefault03" class="form-label">Date</label>
+          <input type="date" class="form-control" id="validationDefault03" v-model="newOrderParams.day" required />
+        </div>
+
+        <div class="col-md-3">
+          <label for="validationDefault05" class="form-label">ETA</label>
+          <input type="text" class="form-control" id="validationDefault05" v-model="newOrderParams.preferred_window" />
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Submit form</button>
+        </div>
+      </div>
       <ul>
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
       </ul>
-      Customer:
-      <select v-model="newOrderParams.customer_id">
-        <!-- inline object literal -->
-        <option v-for="customer in customers" v-bind:key="customer.id" v-bind:value="customer.id">
-          {{ customer.name }}
-        </option>
-      </select>
-      Blend:
-      <input type="integer" v-model="newOrderParams.blend" />
-      Volume:
-      <input type="integer" v-model="newOrderParams.volume" />
-      Date:
-      <input type="date" v-model="newOrderParams.day" />
-      Desired ETA:
-      <input type="text" v-model="newOrderParams.preferred_window" />
-      <input type="submit" value="Create" />
     </form>
   </div>
 </template>

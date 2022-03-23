@@ -5,6 +5,7 @@ export default {
       isLoggedIn: !!localStorage.jwt,
       flashMessage: null,
       isManager: localStorage.manager == "true",
+      user_id: localStorage.user_id,
     };
   },
   watch: {
@@ -17,12 +18,49 @@ export default {
 </script>
 
 <template>
-  <div id="nav">
-    <router-link v-if="!isLoggedIn" to="/">Login</router-link>
-    <router-link v-if="isLoggedIn" to="/logout">Logout</router-link>
-    <router-link v-if="isManager" to="/users">Drivers</router-link>
-    <router-link v-if="isManager" to="/orders/new">New Order</router-link>
-    <router-link v-if="isManager" to="/signup">New Driver</router-link>
-  </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">SprintRoute</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <router-link
+              class="nav-link active"
+              aria-current="page"
+              href="#"
+              v-if="isLoggedIn"
+              :to="`/users/${user_id}`"
+            >
+              Home
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" href="#" v-if="isManager" to="/users">Drivers</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" href="#" v-if="isManager" to="/orders/new">New Order</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" href="#" v-if="isManager" to="/signup">New Driver</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" href="#" v-if="isLoggedIn" to="/logout">Logout</router-link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <router-view />
 </template>
