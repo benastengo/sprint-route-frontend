@@ -1,5 +1,4 @@
 <script>
-/* global bootstrap */
 import axios from "axios";
 export default {
   data: function () {
@@ -30,9 +29,9 @@ export default {
     showInfo: function () {
       document.querySelector("#info-details").showModal();
     },
-    showLoadAssignment: function () {
-      document.querySelector("#load-details").showModal();
-    },
+    // showLoadAssignment: function () {
+    //   document.querySelector("#load-details").showModal();
+    // },
 
     showOrder: function (order) {
       console.log(order);
@@ -74,15 +73,12 @@ export default {
       axios
         .patch("/orders/assignment", { user_ids: this.userIds })
         .then((response) => {
-          console.log("Assign Loads", response);
-
-          var assignLoadsModal = bootstrap.Modal.getInstance(document.getElementById("assignLoadsModal"));
-          assignLoadsModal.hide();
+          console.log("Assign Loads", response.data);
+          this.orders = response.data;
         })
         .catch((error) => {
           console.log("Error Assigning Loads", error.response);
         });
-      this.$router.push(`/users/`);
     },
   },
 };
@@ -106,6 +102,7 @@ export default {
             >
               Edit Driver Info
             </button>
+            <!-- Open Load Assign Modal -->
             <button
               v-if="!user.tractor_number && !user.trailer_number"
               type="button"
@@ -113,8 +110,17 @@ export default {
               data-bs-toggle="modal"
               data-bs-target="#assignLoadsModal"
             >
-              Load Optimization
+              Optimize Loads
             </button>
+            <!-- <button
+              v-if="!user.tractor_number && !user.trailer_number"
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#assignLoadsModal"
+            >
+              Load Optimization
+            </button> -->
           </div>
         </div>
         <!-- <h1>{{ user.first_name + " " + user.last_name }}</h1>
@@ -172,7 +178,7 @@ export default {
     <!-- <h3>Unfulfilled Loads: {{ user.orders.fulfilled.length }}</h3> -->
   </div>
   <h1 v-if="user.orders.length > 0">Todays Loads:</h1>
-  <div>
+  <div v-if="user.orders.length > 0">
     <table v-if="user.tractor_number && user.trailer_number" class="table">
       <thead>
         <tr>
@@ -231,7 +237,7 @@ export default {
     </h2>
   </div>
 
-  <!-- Modal -->
+  <!-- Assign Loads Modal -->
   <div
     class="modal fade"
     id="assignLoadsModal"
@@ -245,20 +251,15 @@ export default {
           <h5 class="modal-title" id="assignLoadsModalLabel">Choose Today's Drivers</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="form-check" v-for="user in users" v-bind:key="user.id">
-          <input class="form-check-input" type="checkbox" :value="user.id" :id="user.id" v-model="userIds" />
-          <label class="form-check-label" :for="user.id">{{ user.first_name }} {{ user.last_name }}</label>
-        </div>
-        <div class="modal-footer">
-          <button
-            id="loadOptimize"
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-            v-on:click="assignLoads()"
-          >
-            Optimize Loads
-          </button>
+        <div class="modal-body">
+          <form v-on:submit.prevent="assignLoads()">
+            <div class="form-check" v-for="user in users" v-bind:key="user.id">
+              <input class="form-check-input" type="checkbox" :value="user.id" :id="user.id" v-model="userIds" />
+              <label class="form-check-label" :for="user.id">{{ user.first_name }} {{ user.last_name }}</label>
+            </div>
+
+            <input class="btn btn-primary" data-bs-dismiss="modal" type="submit" value="Update" />
+          </form>
         </div>
       </div>
     </div>
