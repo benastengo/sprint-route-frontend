@@ -5,6 +5,8 @@ export default {
     return {
       newSessionParams: {},
       errors: [],
+      isLoggedIn: !!localStorage.jwt,
+      user_id: localStorage.user_id,
     };
   },
   methods: {
@@ -27,25 +29,69 @@ export default {
         });
     },
   },
+  created: function () {
+    if (this.isLoggedIn) {
+      this.$router.push(`/users/${this.user_id}`);
+    }
+  },
 };
 </script>
 
 <template>
   <div class="login">
-    <form v-on:submit.prevent="submit()">
-      <h1>SprintRoute</h1>
-      <ul>
-        <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
-      </ul>
-      <div>
-        <label>Email:</label>
-        <input type="email" v-model="newSessionParams.email" />
+    <form>
+      <div class="login-form container">
+        <form v-on:submit.prevent="submit()">
+          <h2 class="text-center">SprintRoute</h2>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Email"
+              v-model="newSessionParams.email"
+              required="required"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Password"
+              v-model="newSessionParams.password"
+              required="required"
+            />
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+          </div>
+        </form>
       </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" v-model="newSessionParams.password" />
-      </div>
-      <input type="submit" value="Log In" />
     </form>
   </div>
 </template>
+
+<style>
+.login-form {
+  width: 340px;
+  margin: 50px auto;
+  font-size: 15px;
+}
+.login-form form {
+  margin-bottom: 15px;
+  background: #f7f7f7;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  padding: 30px;
+}
+.login-form h2 {
+  margin: 0 0 15px;
+}
+.form-control,
+.btn {
+  min-height: 38px;
+  border-radius: 2px;
+}
+.btn {
+  font-size: 15px;
+  font-weight: bold;
+}
+</style>

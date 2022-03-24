@@ -67,11 +67,30 @@ export default {
 
 <template>
   <div class="customers-show">
-    <h2>{{ customer.name }}</h2>
-    <h2>Address: {{ customer.address }}</h2>
-
+    <table class="table caption-top">
+      <caption>{{ customer.name }}: {{ customer.address }}</caption>
+      <thead>
+        <tr>
+          <th scope="col">Blend</th>
+          <th scope="col">Volume</th>
+          <th scope="col">Date</th>
+          <th scope="col">Delivered</th>
+        </tr>
+      </thead>
+      <tbody v-for="order in customer.orders" v-bind:key="order.id">
+        <tr>
+          <th scope="row">{{ order.blend }}</th>
+          <td>{{ order.volume }}</td>
+          <td>{{ order.day }}</td>
+          <td>{{ order.fulfilled }}</td>
+          <button type="button" class="btn btn-primary color" v-if="isManager" v-on:click="showOrder(order)">
+            Edit
+          </button>
+        </tr>
+      </tbody>
+    </table>
     <h2>
-      <button v-if="isManager" v-on:click="showNewOrder()">Create Order:</button>
+      <button type="button" class="btn btn-primary" v-if="isManager" v-on:click="showNewOrder()">Create Order</button>
       <dialog id="newOrder-details">
         <form method="dialog">
           <h2>New Order for {{ customer.name }}</h2>
@@ -96,14 +115,6 @@ export default {
           <button>Close</button>
         </form>
       </dialog>
-    </h2>
-    <h3 v-if="customer.orders.length > 0">Active Orders:</h3>
-    <h2 v-for="order in customer.orders" v-bind:key="order.id">
-      <h3>
-        Blend: {{ order.blend }} || volume: {{ order.volume }} GAL || date: {{ order.day }} || Completed:
-        {{ order.fulfilled }}
-      </h3>
-      <button v-if="isManager" v-on:click="showOrder(order)">Edit</button>
     </h2>
     <dialog id="order-details">
       <form method="dialog">
@@ -131,3 +142,9 @@ export default {
     </dialog>
   </div>
 </template>
+
+<style>
+.color {
+  color: rgb(64, 0, 255);
+}
+</style>

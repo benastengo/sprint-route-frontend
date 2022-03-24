@@ -25,49 +25,53 @@ export default {
 </script>
 
 <template>
-  <div class="signup">
+  <div class="container border border-5 p-4">
     <form v-on:submit.prevent="submit()">
-      <h1>Signup</h1>
-      <ul>
-        <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
-      </ul>
-      <div>
-        <label>First Name:</label>
-        <input type="text" v-model="newUserParams.first_name" />
+      <div class="center p-2">
+        <h1><strong>Driver Sign-up</strong></h1>
       </div>
-      <div>
-        <label>Last Name:</label>
-        <input type="text" v-model="newUserParams.last_name" />
+      <div class="form-group">
+        <label for="newDriverFirstName">First Name</label>
+        <input type="text" class="form-control" id="newDriverFirstName" v-model="newUserParams.first_name" />
       </div>
-      <div>
-        <label>Email:</label>
-        <input type="email" v-model="newUserParams.email" />
+      <div class="form-group">
+        <label for="newDriverLastName">Last Name</label>
+        <input type="text" class="form-control" id="newDriverLastName" v-model="newUserParams.last_name" />
       </div>
-      <div>
-        <label>Trailer Number:</label>
-        <input type="integer" v-model="newUserParams.trailer_number" />
+      <div class="form-group">
+        <label for="newDriverEmail">Email</label>
+        <input type="text" class="form-control" id="newDriverEmail" v-model="newUserParams.email" />
       </div>
-      <div>
-        <label>Tractor Number:</label>
-        <input type="integer" v-model="newUserParams.tractor_number" />
+      <div class="form-group">
+        <label for="newDriverTractor">Tractor Number</label>
+        <input type="integer" class="form-control" id="newDriverTractor" v-model="newUserParams.tractor_number" />
       </div>
-      <div>
-        <label>Manager:</label>
-        <input type="boolean" v-model="newUserParams.manager" />
+      <div class="form-group">
+        <label for="newDriverTrailer">Trailer Number</label>
+        <input type="integer" class="form-control" id="newDriverTrailer" v-model="newUserParams.trailer_number" />
       </div>
-      <div>
-        <label>Location:</label>
-        <input type="text" v-model="newUserParams.location" />
+      <div class="form-group">
+        <label for="newDriverInputManager">Manager</label>
+        <input type="boolean" class="form-control" id="newDriverInputManager" v-model="newUserParams.manager" />
       </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" v-model="newUserParams.password" />
+      <div class="form-group">
+        <label for="newDriverInputLocation">Location</label>
+        <input type="text" class="form-control" id="newDriverInputLocation" v-model="newUserParams.location" />
       </div>
-      <div>
-        <label>Confirm:</label>
-        <input type="password" v-model="newUserParams.password_confirmation" />
+      <div class="form-group">
+        <label for="newDriverInputPassword1">Password</label>
+        <input type="password" class="form-control" id="newDriverInputPassword1" v-model="newUserParams.password" />
       </div>
-      <input type="submit" value="Submit" />
+      <div class="form-group">
+        <label for="newDriverConfirmPass">Confirm Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="newDriverConfirmPass"
+          v-model="newUserParams.password_confirmation"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary mt-4">Submit</button>
     </form>
   </div>
 </template>

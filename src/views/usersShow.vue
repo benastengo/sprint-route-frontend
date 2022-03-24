@@ -76,12 +76,13 @@ export default {
         .then((response) => {
           console.log("Assign Loads", response);
 
-          bootstrap.Modal.getInstance(document.getElementById("assignLoadsModalLabel")).hide();
+          var assignLoadsModal = bootstrap.Modal.getInstance(document.getElementById("assignLoadsModal"));
+          assignLoadsModal.hide();
         })
         .catch((error) => {
           console.log("Error Assigning Loads", error.response);
         });
-      this.$router.push(`/users/`, 2000);
+      this.$router.push(`/users/`);
     },
   },
 };
@@ -89,42 +90,62 @@ export default {
 
 <template>
   <div v-if="isManager">
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignLoadsModal">
-      Load Optimization
-    </button>
-  </div>
-  <div class="home">
-    <h1>{{ user.first_name + " " + user.last_name }}</h1>
-    <h3 v-if="user.tractor_number">Tractor: {{ user.tractor_number }}</h3>
-    <h3 v-if="user.trailer_number">Trailer: {{ user.trailer_number }}</h3>
-    <h3>Driver Location: {{ user.location }}</h3>
-    <button v-on:click="showInfo()">Edit Driver Info</button>
-    <!-- Orders index for v2 -->
-    <!-- <div v-for="order in orders" v-bind:key="order.id">
-      <div v-if="isManager && order.user_id == null">
-        <ul class="list-group list-group-horizontal">
-          <li class="list-group-item">{{ order.customer.name }}</li>
-          <li class="list-group-item">{{ order.blend }}</li>
-          <li class="list-group-item">{{ order.volume }}</li>
-        </ul>
-      </div>
-    </div> -->
-    <div v-for="order in orders" v-bind:key="order.id">
-      <div v-if="isManager && order.user_id == null" class="list-group">
-        <a class="list-group-item list-group-item-action active mb-2 mt-1">
-          <div class="d-flex w-100 justify-content-between">
-            <router-link class="color" :to="`/customers/${order.customer.id}`" tag="button">
-              {{ order.customer.name }}
-            </router-link>
-            <small>{{ order.blend }} for {{ order.volume }} gallons</small>
+    <div class="home">
+      <div class="container">
+        <div class="card text-center">
+          <div class="card-header">Driver Location: {{ user.location }}</div>
+          <div class="card-body">
+            <h5 class="card-title">{{ user.first_name + " " + user.last_name }}</h5>
+            <p class="card-text" v-if="user.tractor_number">Tractor: {{ user.tractor_number }}</p>
+            <p class="card-text" v-if="user.trailer_number">Trailer: {{ user.trailer_number }}</p>
+            <button
+              v-if="user.tractor_number && user.trailer_number"
+              type="button"
+              class="btn btn-primary"
+              v-on:click="showInfo()"
+            >
+              Edit Driver Info
+            </button>
+            <button
+              v-if="!user.tractor_number && !user.trailer_number"
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#assignLoadsModal"
+            >
+              Load Optimization
+            </button>
           </div>
-          <p class="mb-1">
-            {{ order.customer.address }}
-          </p>
-          <small>{{ order.day }}</small>
-        </a>
+        </div>
+        <!-- <h1>{{ user.first_name + " " + user.last_name }}</h1>
+      <h3 v-if="user.tractor_number">Tractor: {{ user.tractor_number }}</h3>
+      <h3 v-if="user.trailer_number">Trailer: {{ user.trailer_number }}</h3>
+      <h3>Driver Location: {{ user.location }}</h3>
+      <button v-on:click="showInfo()">Edit Driver Info</button> -->
       </div>
+      <!-- Orders index for manager to see unassigned loads -->
+      <table v-if="!user.tractor_number && !user.trailer_number" class="table container p-3">
+        <thead>
+          <tr>
+            <th scope="col">Customer</th>
+            <th scope="col">Address</th>
+            <th scope="col">Blend</th>
+            <th scope="col">Volume (GAL)</th>
+          </tr>
+        </thead>
+        <tbody v-for="order in orders" v-bind:key="order.id">
+          <tr v-if="isManager && order.user_id == null">
+            <td>
+              <router-link class="color" :to="`/customers/${order.customer.id}`" tag="button">
+                {{ order.customer.name }}
+              </router-link>
+            </td>
+            <td>{{ order.customer.address }}</td>
+            <td>{{ order.blend }}</td>
+            <td>{{ order.volume }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <h3 v-if="user.orders.length > 0">Assigned Loads: {{ user.orders.length }}</h3>
     <br />
@@ -151,17 +172,36 @@ export default {
     <!-- <h3>Unfulfilled Loads: {{ user.orders.fulfilled.length }}</h3> -->
   </div>
   <h1 v-if="user.orders.length > 0">Todays Loads:</h1>
-  <div v-for="order in user.orders" v-bind:key="order.id">
-    <!-- <h2>Load Origin:</h2> -->
-    <h2>Blend: {{ order.blend }}</h2>
+  <div>
+    <table v-if="user.tractor_number && user.trailer_number" class="table">
+      <thead>
+        <tr>
+          <th scope="col">Customer</th>
+          <th scope="col">Address</th>
+          <th scope="col">Blend</th>
+          <th scope="col">Volume</th>
+        </tr>
+      </thead>
+      <tbody v-for="order in user.orders" v-bind:key="order.id">
+        <tr>
+          <td>
+            <router-link :to="`/customers/${order.customer.id}`" tag="button">{{ order.customer.name }}</router-link>
+          </td>
+          <td>{{ order.customer.address }}</td>
+          <td>{{ order.blend }}</td>
+          <td>{{ order.volume }}</td>
+          <button v-if="isManager" v-on:click="showOrder(order)">Edit</button>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <h2>Blend: {{ order.blend }}</h2>
     <h2>Volume (GAL): {{ order.volume }}</h2>
     <h2 v-if="order.preferred_window">ETA: {{ order.preferred_window }}</h2>
     <h2>
       Store:
       <router-link :to="`/customers/${order.customer.id}`" tag="button">{{ order.customer.name }}</router-link>
       - {{ order.customer.address }}
-    </h2>
-    <button v-if="isManager" v-on:click="showOrder(order)">Edit</button>
+    </h2> -->
     <br />
     <h2>
       <dialog id="order-details">
@@ -227,6 +267,6 @@ export default {
 
 <style>
 .color {
-  color: rgb(250, 250, 250);
+  color: rgb(0, 0, 0);
 }
 </style>
